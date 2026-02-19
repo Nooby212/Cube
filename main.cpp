@@ -40,8 +40,9 @@ const char* vertexShaderSource = "#version 330 core\n"
     "}\0";
 const char* fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
+    "uniform vec4 ourColor;\n"
     "void main() {\n"
-    "   FragColor = vec4(0.8f, 0.3f, 0.0f, 1.0f); //Cube Color\n"
+    "   FragColor = ourColor;\n"
     "}\n\0";
 
 //some mouse position things
@@ -105,6 +106,8 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     while (!glfwWindowShouldClose(window)) {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GL_TRUE);
@@ -131,28 +134,48 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        glUseProgram(shaderProgram); //WE CALL SHADERPROGRAM HERE. DON'T GET LOST
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(pitch), glm::vec3(1.0f, 0.0f, 0.0f));
 
-        // 2. View Matrix (Positioning the 'camera' 3 units back)
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
 
-        // 3. Projection Matrix (Perspective lens)
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        // 4. Send all 3 to the GPU
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-        glBindVertexArray(VAO);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glLineWidth(2.0f);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glBindVertexArray(VAO);
+        int colorLoc = glGetUniformLocation(shaderProgram, "ourColor");
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glUniform4f(colorLoc, 0.8f, 0.3f, 0.0f, 1.0f);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glLineWidth(2.0f);
+        glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
+
+        glEnable(GL_POLYGON_OFFSET_LINE);
+        glPolygonOffset(-1.0, -1.0);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glPolygonOffset(-1.0, -1.0);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glDisable(GL_POLYGON_OFFSET_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glfwSwapBuffers(window);
         glfwPollEvents();
 
