@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 //creating the cube
 float vertices[] = {
     //front
@@ -28,6 +29,7 @@ unsigned int indices[] = {
     4, 5, 1, 1, 0, 4, // Bottom
     3, 2, 6, 6, 7, 3  // Top
 };
+//shaders
 const char* vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "uniform mat4 model;\n"
@@ -42,7 +44,14 @@ const char* fragmentShaderSource = "#version 330 core\n"
     "   FragColor = vec4(0.8f, 0.3f, 0.0f, 1.0f); //Cube Color\n"
     "}\n\0";
 
+//some mouse position things
+ float lastX = 400, lastY = 300; // Center of the 800x600 window
+    float yaw = -90.0f;
+    float pitch = 0.0f;
+    bool firstMouse = true;
+
 int main() {
+
     unsigned int shaderProgram;
 
     if (!glfwInit()) return -1;
@@ -58,7 +67,8 @@ int main() {
     }
     glfwMakeContextCurrent(window);
 
-    if (glewInit() != GLEW_OK) return-1; //WE INITIALISE GLEW HERE
+    if (glewInit() != GLEW_OK) return-1; //WE INITIALISE GLEW HERE. DO NOT GET LOST.
+
 
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -99,18 +109,46 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
+
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+
+        if (firstMouse) {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
+        lastX = xpos;
+        lastY = ypos;
+
+        float sensitivity = 0.1f;
+        yaw   += xoffset * sensitivity;
+        pitch += yoffset * sensitivity;
+
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
 
-        glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(yaw), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(pitch), glm::vec3(1.0f, 0.0f, 0.0f));
+
+        // 2. View Matrix (Positioning the 'camera' 3 units back)
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+
+        // 3. Projection Matrix (Perspective lens)
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
+        // 4. Send all 3 to the GPU
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+        glBindVertexArray(VAO);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
