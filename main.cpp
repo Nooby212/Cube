@@ -104,7 +104,6 @@ int main() {
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -115,6 +114,8 @@ int main() {
         }
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+
+            //  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
@@ -135,6 +136,8 @@ int main() {
             pitch += yoffset * sensitivity;
 
         }
+
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f); //we change bg color here
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
