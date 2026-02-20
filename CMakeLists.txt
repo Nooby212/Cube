@@ -13,13 +13,7 @@ target_link_libraries(OpenGLCube
         PRIVATE
         GLEW::GLEW
         glfw
+        GL
         glm::glm
 )
 
-if(WIN32)
-    add_custom_command(TARGET OpenGLCube POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:GLEW::GLEW>
-            $<TARGET_FILE_DIR:OpenGLCube>
-    )
-endif()
