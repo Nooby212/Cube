@@ -1,10 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <stdlib.h>
-#include <stdio.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 
@@ -106,17 +103,22 @@ int main() {
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
     glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwGetInputMode(window, GLFW_CURSOR_NORMAL);
 
     while (!glfwWindowShouldClose(window)) {
+        bool pressed = glfwGetKey(window, GLFW_KEY_W);
+        int currentmode = glfwGetInputMode(window, GLFW_CURSOR);
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        if (pressed) {
 
-            //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            if (currentmode != GLFW_CURSOR_DISABLED) {
+                glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
+                firstMouse = true;
+            }
 
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
@@ -138,7 +140,8 @@ int main() {
 
         }
 
-        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        //glfwSetInputMode(window, GLFW_CURSOR, 1);
+
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f); //we change bg color here
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -182,7 +185,9 @@ int main() {
         glPolygonOffset(-1.0, -1.0);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glDisable(GL_POLYGON_OFFSET_LINE);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);\
+
+        glfwSetInputMode(window, GLFW_CURSOR, 1);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -191,3 +196,4 @@ int main() {
     glfwTerminate();
     return 0;
 }
+//
