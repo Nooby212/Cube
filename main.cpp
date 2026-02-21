@@ -103,7 +103,7 @@ int main() {
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
     glEnable(GL_DEPTH_TEST);
-    glfwGetInputMode(window, GLFW_CURSOR_NORMAL);
+    glfwGetInputMode(window, GLFW_CURSOR_DISABLED);
 
     while (!glfwWindowShouldClose(window)) {
         bool pressed = glfwGetKey(window, GLFW_KEY_W);
@@ -115,10 +115,10 @@ int main() {
 
         if (pressed) {
 
-            if (currentmode != GLFW_CURSOR_DISABLED) {
+            /*if (currentmode != GLFW_CURSOR_DISABLED) {
                 glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
                 firstMouse = true;
-            }
+            }*/
 
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
