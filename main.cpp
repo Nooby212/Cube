@@ -103,7 +103,7 @@ int main() {
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
     glEnable(GL_DEPTH_TEST);
-    glfwGetInputMode(window, GLFW_CURSOR_NORMAL);
+    glfwGetInputMode(window, GLFW_CURSOR_DISABLED);
 
     while (!glfwWindowShouldClose(window)) {
         bool pressed = glfwGetKey(window, GLFW_KEY_W);
@@ -115,11 +115,12 @@ int main() {
 
         if (pressed) {
 
-            if (currentmode != GLFW_CURSOR_DISABLED) {
+            /*if (currentmode != GLFW_CURSOR_DISABLED) {
                 glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
                 firstMouse = true;
-            }
+            }*/
 
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -134,7 +135,7 @@ int main() {
             lastX = xpos;
             lastY = ypos;
 
-            float sensitivity = 0.1f;
+            float sensitivity = 0.2f;
             yaw   += xoffset * sensitivity;
             pitch += yoffset * sensitivity;
 
@@ -142,7 +143,7 @@ int main() {
 
         //glfwSetInputMode(window, GLFW_CURSOR, 1);
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f); //we change bg color here
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //we change bg color here
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram); //WE CALL SHADERPROGRAM HERE. DON'T GET LOST
@@ -171,7 +172,7 @@ int main() {
         int colorLoc = glGetUniformLocation(shaderProgram, "ourColor");
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glUniform4f(colorLoc, 0.8, 0.3, 0, 1.0f); //change cube color
+        glUniform4f(colorLoc, 1.0, 1.0, 1, 0.4f); //change cube color
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
