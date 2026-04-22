@@ -1,7 +1,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <stdlib.h>
+#include <stdio.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 
@@ -103,24 +106,17 @@ int main() {
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
     glEnable(GL_DEPTH_TEST);
-    glfwGetInputMode(window, GLFW_CURSOR_DISABLED);
 
     while (!glfwWindowShouldClose(window)) {
-        bool pressed = glfwGetKey(window, GLFW_KEY_W);
-        int currentmode = glfwGetInputMode(window, GLFW_CURSOR);
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
 
-        if (pressed) {
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 
-            /*if (currentmode != GLFW_CURSOR_DISABLED) {
-                glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
-                firstMouse = true;
-            }*/
+            //  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -135,15 +131,14 @@ int main() {
             lastX = xpos;
             lastY = ypos;
 
-            float sensitivity = 0.2f;
+            float sensitivity = 0.1f;
             yaw   += xoffset * sensitivity;
             pitch += yoffset * sensitivity;
 
         }
 
-        //glfwSetInputMode(window, GLFW_CURSOR, 1);
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //we change bg color here
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f); //we change bg color here
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram); //WE CALL SHADERPROGRAM HERE. DON'T GET LOST
@@ -160,7 +155,7 @@ int main() {
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glLineWidth(2.0f);
 
         glBindVertexArray(VAO);
@@ -172,7 +167,7 @@ int main() {
         int colorLoc = glGetUniformLocation(shaderProgram, "ourColor");
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glUniform4f(colorLoc, 1.0, 1.0, 1, 0.4f); //change cube color
+        glUniform4f(colorLoc, 0.8, 0.3, 0, 1.0f); //change cube color
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -186,9 +181,7 @@ int main() {
         glPolygonOffset(-1.0, -1.0);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glDisable(GL_POLYGON_OFFSET_LINE);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);\
-
-        glfwSetInputMode(window, GLFW_CURSOR, 1);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -197,4 +190,3 @@ int main() {
     glfwTerminate();
     return 0;
 }
-//
