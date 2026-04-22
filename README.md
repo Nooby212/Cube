@@ -1,2 +1,2 @@
-Script that utalizes OpenGL to draw and rotate a cube.
+Script that utalizes OpenGL to draw and rotate a cube. 
 
