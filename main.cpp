@@ -131,9 +131,9 @@ int main() {
             lastX = xpos;
             lastY = ypos;
 
-            float sensitivity = 0.1f;
-            yaw   += xoffset * sensitivity;
-            pitch += yoffset * sensitivity;
+            float sensitivity = 0.2f;
+            yaw   -= xoffset * sensitivity;
+            pitch -= yoffset * sensitivity;
 
         }
 
@@ -155,7 +155,7 @@ int main() {
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//
         glLineWidth(2.0f);
 
         glBindVertexArray(VAO);
